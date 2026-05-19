@@ -13,10 +13,10 @@ def main_menu():
 
 def events_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
-    btn1 = types.KeyboardButton("🎭 Спектакль в Астана Opera")
-    btn2 = types.KeyboardButton("🏀 Матч в Барыс Арене")
-    btn3 = types.KeyboardButton("🎨 Выставка в Нацмузее")
-    btn_back = types.KeyboardButton("⬅️ Назад в меню ")
+    btn1 = types.KeyboardButton("Ne Prosto Orchestra. Саундтреки к «Наруто» и «Аватар»")
+    btn2 = types.KeyboardButton("Comic Con Astana 2026")
+    btn3 = types.KeyboardButton("Park Live Almaty")
+    btn_back = types.KeyboardButton("⬅️ Назад")
     markup.add(btn1, btn2, btn3, btn_back)
     return markup
 
@@ -30,8 +30,9 @@ def places_menu():
     btn6 = types.KeyboardButton("🎮 Развлечения и досуг")
     btn_back = types.KeyboardButton("⬅️ Назад")
     markup.add(btn1, btn2, btn3, btn4, btn5, btn6)
-    markup.add(btn_back) # Кнопка назад красивой строкой внизу
+    markup.add(btn_back)
     return markup
+
 def entertainment_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     btn1 = types.KeyboardButton("Каток «Алау» ⛸️")
@@ -40,6 +41,7 @@ def entertainment_menu():
     btn_back = types.KeyboardButton("⬅️ Назад в меню")
     markup.add(btn1, btn2, btn3, btn_back)
     return markup
+
 def parks_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     btn1 = types.KeyboardButton("🌳 Президентский парк")
@@ -49,6 +51,7 @@ def parks_menu():
     btn_back = types.KeyboardButton("⬅️ Назад в меню")
     markup.add(btn1, btn2, btn3, btn4, btn_back)
     return markup
+
 def culture_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     btn1 = types.KeyboardButton("Астана Опера 🎻")
@@ -58,6 +61,7 @@ def culture_menu():
     btn_back = types.KeyboardButton("⬅️ Назад в меню")
     markup.add(btn1, btn2, btn3, btn4, btn_back)
     return markup
+
 def eat_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     btn1 = types.KeyboardButton("Sandyq 🥘")
@@ -77,6 +81,7 @@ def attractions_menu():
     btn_back = types.KeyboardButton("⬅️ Назад в меню")
     markup.add(btn1, btn2, btn3, btn4, btn_back)
     return markup
+
 def shopping_center_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     btn1 = types.KeyboardButton("Хан Шатыр 🎪")
@@ -90,5 +95,11 @@ def shopping_center_menu():
 def get_2gis_button(url):
     markup = types.InlineKeyboardMarkup()
     btn = types.InlineKeyboardButton(text="Открыть в 2GIS 📍", url=url)
+    markup.add(btn)
+    return markup
+
+def get_website_button(button_text, url):
+    markup = types.InlineKeyboardMarkup()
+    btn = types.InlineKeyboardButton(text=button_text, url=url)
     markup.add(btn)
     return markup
