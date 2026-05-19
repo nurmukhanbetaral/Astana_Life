@@ -123,3 +123,21 @@ if __name__ == '__main__':
         bot.infinity_polling(timeout=10, long_polling_timeout=5)
     except Exception as e:
         print(f"Замечена заминка в сети, но я продолжаю работать! Ошибка: {e}")
+if __name__ == '__main__':
+    print("Бот пытается запуститься...")
+    try:
+        print("Очистка старых подключений к Telegram...")
+        bot.remove_webhook()
+    except Exception as e:
+        print(f"Не удалось удалить вебхук: {e}")
+
+    while True:
+        try:
+            print("Подключение к серверам Telegram...")
+            bot.infinity_polling(timeout=20, long_polling_timeout=10)
+        except Exception as e:
+            print(f"Ошибка сети или таймаут: {e}")
+            print("Ожидание 10 секунд перед следующей попыткой переподключения...")
+            import time
+
+            time.sleep(10)
