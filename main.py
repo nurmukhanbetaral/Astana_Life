@@ -1,7 +1,7 @@
 # main.py
 import telebot
 import keyboards
-import places_data  # Твой новый файл с данными!
+import places_data
 from telebot import types
 
 TOKEN = '8732624237:AAG4_2n07jaE1aG9uFg66t1JlruaIcxbniw'
@@ -19,7 +19,7 @@ def start(message):
 
 @bot.message_handler(content_types=['text'])
 def handle_messages(message):
-    # --- ГЛАВНЫЕ РАЗДЕЛЫ ---
+    #ГЛАВНЫЕ РАЗДЕЛЫ
     if message.text == "🔥 Ближайшие события":
         bot.send_message(message.chat.id, "Выбери мероприятие:", reply_markup=keyboards.events_menu())
 
@@ -37,7 +37,7 @@ def handle_messages(message):
     elif message.text == "Куда можно сходить:":
         bot.send_message(message.chat.id, "Выбери куда хочешь сходить", reply_markup=keyboards.places_menu())
 
-    # --- КАТЕГОРИИ МЕСТ ---
+    # КАТЕГОРИИ МЕСТ
     elif message.text == "🌲 Парки и зоны отдыха":
         bot.send_message(message.chat.id, "В Астане много классных парков. Какой именно тебя интересует?",
                          reply_markup=keyboards.parks_menu())
@@ -50,44 +50,68 @@ def handle_messages(message):
     elif message.text == "📸 Достопримечательности":
         bot.send_message(message.chat.id, "«Хочешь увидеть символы столицы? У меня есть подборка мест!» 🏛️",
                          reply_markup=keyboards.attractions_menu())
+
     elif message.text == "🛍️ Шопинг и кино":
-        bot.send_message(message.chat.id, "«Хочешь обновить гардероб или зацепить новинки кино на большом экране? Выбирай лучший ТРЦ города!» 🛍️",
+        bot.send_message(message.chat.id,
+                         "«Хочешь обновить гардероб или зацепить новинки кино на большом экране? Выбирай лучший ТРЦ города!» 🛍️",
                          reply_markup=keyboards.shopping_center_menu())
+
     elif message.text == "🎭 Культура и искусство":
-        bot.send_message(message.chat.id, "«Хочешь прикоснуться к прекрасному? В Астане потрясающие театры и музеи. Выбирай, куда купить билет!» 🎭",
+        bot.send_message(message.chat.id,
+                         "«Хочешь прикоснуться к прекрасному? В Астане потрясающие театры и музеи. Выбирай, куда купить билет!» 🎭",
                          reply_markup=keyboards.culture_menu())
+
     elif message.text == "🎮 Развлечения и досуг":
-        bot.send_message(message.chat.id,"«Скучать сегодня точно не придется! В Астане много мест для активного отдыха. Что выберешь?» 🎮",
+        bot.send_message(message.chat.id,
+                         "«Скучать сегодня точно не придется! В Астане много мест для активного отдыха. Что выберешь?» 🎮",
                          reply_markup=keyboards.entertainment_menu())
-        # --- УНИВЕРСАЛЬНЫЙ ОБРАБОТЧИК МЕСТ ИЗ ДАННЫХ ---
+
+    # --- УНИВЕРСАЛЬНЫЙ ОБРАБОТЧИК МЕСТ И СОБЫТИЙ ИЗ ДАННЫХ ---
     elif message.text in places_data.PLACES:
         info = places_data.PLACES[message.text]
 
-        try:
-            # Открываем локальный файл картинки в бинарном режиме ('rb')
-            with open(info["img"], 'rb') as photo:
-                bot.send_photo(
+        #ЕСТЬ КАРТИНКА (Обычные локации)
+        if "img" in info:
+            try:
+                with open(info["img"], 'rb') as photo:
+                    bot.send_photo(
+                        message.chat.id,
+                        photo,
+                        caption=info["text"],
+                        parse_mode='Markdown',
+                        reply_markup=keyboards.get_2gis_button(info["2gis"])
+                    )
+            except FileNotFoundError:
+                # Если файла физически нет
+                bot.send_message(
                     message.chat.id,
-                    photo,  # Отправляем сам файл, а не ссылку
-                    caption=info["text"],
+                    f"⚠️ Картинка не найдена, показываю описание:\n\n{info['text']}",
                     parse_mode='Markdown',
                     reply_markup=keyboards.get_2gis_button(info["2gis"])
                 )
-        except FileNotFoundError:
-            # Если ты забыл положить картинку в папку images, бот не упадет, а предупредит тебя
+
+      #НЕТ КАРТИНКИ (Концерты и события)
+        else:
             bot.send_message(
                 message.chat.id,
-                f"Ошибка: Не удалось найти файл картинки по пути `{info['img']}`. Проверь папку images!",
-                parse_mode='Markdown'
+                info["text"],
+                parse_mode='Markdown',
+                reply_markup=keyboards.get_website_button("Купить билеты / Подробнее 🎟️", info["site"])
             )
-    # --- КНОПКА НАЗАД ---
-    elif message.text == "⬅️ Назад в меню":
-        # Возвращаем пользователя к выбору категорий
+
+    elif message.text == "🌍 Официальный сайт":
+        text = "Нажми на кнопку ниже, чтобы перейти на сайт:"
+        site_url = "https://www.gov.kz"
+        bot.send_message(message.chat.id, text, reply_markup=keyboards.get_website_button("Открыть сайт 🌐", site_url))
+
+    # --- КНОПКИ НАЗАД ---
+    elif message.text in ["⬅️ Назад в меню", "⬅️ Назад в меню "]:
         bot.send_message(message.chat.id, "Выбирай категорию:", reply_markup=keyboards.places_menu())
+
     elif message.text == "⬅️ Назад":
         bot.send_message(
             message.chat.id,
-            f"Салам, {message.from_user.first_name}! Это Астана Лайф. Выбирай:",
+            f"Салам! Выбирай:",
             reply_markup=keyboards.main_menu()
         )
 
